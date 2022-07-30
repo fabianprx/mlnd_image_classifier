@@ -42,7 +42,7 @@ def predict(image_path, model, top_k):
 # Parse arguments from CLI
 parser = argparse.ArgumentParser(description='Keras Predictor - script that can predict probabilities and classes for given images')
 
-parser.add_argument(dest='imgPath', action='store', type=str, help='File path to the image to be classified')
+parser.add_argument(dest='imgPath', action='store', type=str, help='File path to the image to be classified. If a directory is passed, the whole directory will be used.')
 parser.add_argument(dest='modelPath', action='store', type=str, help='File path to the image to be classified')
 parser.add_argument('--top_k', dest='top_k', type=int, action='store', default=1,\
                     help='Return the top k most likely classes')
@@ -53,7 +53,10 @@ args = vars(parser.parse_args()) # Store args
 
 # Get all absolute files in image directory
 imgPath = args['imgPath']
-absFilePaths = [join(imgPath,f) for f in listdir(imgPath) if isfile(join(imgPath,f))] # Check for all folders/files in dir and only use files
+if imgPath.endswith(('.jpg', '.png', '.gif')):
+    absFilePaths = [imgPath]
+else:
+    absFilePaths = [join(imgPath,f) for f in listdir(imgPath) if isfile(join(imgPath,f))] # Check for all folders/files in dir and only use files
 
 # Load model
 try:
